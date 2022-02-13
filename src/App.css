@@ -11,6 +11,7 @@
   align-items:center;
   justify-content: center;
   flex-direction: row;
+  background-color: #f0f0f0
 }
 
 
@@ -38,7 +39,7 @@
 }
 
 .Cell-wrong-pos {
-  background-color: yellow;
+  background-color: rgb(197, 197, 41);
 }
 
 .Letter-red {

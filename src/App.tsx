@@ -46,25 +46,31 @@ const GameOver: FunctionComponent<{gameOver: boolean}> = ({gameOver = false}) =>
   }
 }
 
-type UsedLetterState = {
-  letter: string;
-  used: boolean;
-}
-
 const UsedLetters: FunctionComponent<{guesses: Guess[]}> = ({guesses = []}) => {
   const guessedLetters = guesses
     .map((guess: Guess) => guess.letters)
     .reduce((a: Letter[], b: Letter[]) => a.concat(b, []))
-    .map(x => x.letter);
   const keys =
     (["Q", "W", "E", "R", "T", "Y", "U", "I", "O", "P", "Å",
     "A", "S", "D", "F", "G", "H", "J", "K", "L", "Ö", "Ä",
-    "Z", "X", "C", "V", "B", "N", "M"]).map((letter: string) => ({letter, used: guessedLetters.includes(letter)}) as UsedLetterState);
+    "Z", "X", "C", "V", "B", "N", "M"]).map((letter: string) => ({letter, state: LetterState.NONE}) as Letter);
 
-  const drawLetters = (keys: UsedLetterState[]) => {
+  keys.forEach(x => {
+    const matchingGuess = guessedLetters.filter(y => x.letter === y.letter)
+    if (matchingGuess && matchingGuess.length > 0) {
+      x.state = matchingGuess[0].state;
+    }
+  })
+
+  const drawLetters = (keys: Letter[]) => {
     const elems = []
-    for(let i = 0; i < keys.length; i++) {
-      elems.push(<span className={keys[i].used ? "Letter-red" : ""}>{keys[i].letter}</span>)
+    for (let i = 0; i < keys.length; i++) {
+      const cellClass = (letter: Letter | undefined) => classNames({
+        'Cell-correct': letter?.state === LetterState.CORRECT,
+        'Cell-wrong': letter?.state === LetterState.WRONG,
+        'Cell-wrong-pos': letter?.state === LetterState.WRONG_POSITION
+      })
+      elems.push(<span className={cellClass(keys[i])}>{keys[i].letter}</span>)
     }
     return elems;
   }
