@@ -37,19 +37,30 @@ const Row: FunctionComponent<{guess: Guess}> = ({guess = undefined}) => {
   );
 }
 
+enum LetterState {
+  CORRECT,
+  WRONG_POSITION,
+  WRONG
+}
+
+type Letter = {
+  letter: string;
+  state: LetterState;
+}
+
 type Guess = {
-  word: string;
+  letters: Letter[];
   locked: boolean;
   correct: boolean;
 }
 
 const guessesInitialState: Guess[] = [
-  {word: "", locked: false, correct: false},
-  {word: "", locked: false, correct: false},
-  {word: "", locked: false, correct: false},
-  {word: "", locked: false, correct: false},
-  {word: "", locked: false, correct: false},
-  {word: "", locked: false, correct: false}
+  {letters: [] as Letter[], locked: false, correct: false},
+  {letters: [] as Letter[], locked: false, correct: false},
+  {letters: [] as Letter[], locked: false, correct: false},
+  {letters: [] as Letter[], locked: false, correct: false},
+  {letters: [] as Letter[], locked: false, correct: false},
+  {letters: [] as Letter[], locked: false, correct: false}
 ]
 
 const word = "JAKOB";
@@ -60,17 +71,19 @@ const App: FunctionComponent<{}> = () => {
 
   useEffect(() => {
     const handleKeydown = (event: any) => {
-      if (event.keyCode === 13 && guesses[currentRow].word.length === 5) {
+      if (event.keyCode === 13 && guesses[currentRow].letters.length === 5) {
         const updatedGuess = guesses.slice();
-        if (updatedGuess[currentRow].word === word) {
+        if (updatedGuess[currentRow].letters.map(x => x.letter).reduce((a: string,b:string) => a + b) === word) {
           updatedGuess[currentRow].correct = true;
         }
+
+        
 
         updatedGuess[currentRow].locked = true;
         setGuesses(updatedGuess)
         
         setCurrentRow(currentRow + 1);
-      } else if (event.keyCode >= 65 && event.keyCode <= 90 && guesses[currentRow].word.length < 5) {
+      } else if (event.keyCode >= 65 && event.keyCode <= 90 && guesses[currentRow].letters.length < 5) {
         const updatedGuess = guesses.slice();
         updatedGuess[currentRow].word += event.key.toUpperCase();
         setGuesses(updatedGuess)
