@@ -20,10 +20,14 @@
   overflow: hidden;
 }
 
-.Cell-guessed {
-  background-color: red;
+.Cell-correct {
+  background-color: green;
 }
 
-.Cell-correct {
-  background-color: purple;
+.Cell-wrong {
+  background-color: grey;
+}
+
+.Cell-wrong-pos {
+  background-color: yellow;
 }

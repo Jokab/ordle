@@ -19,17 +19,18 @@ const Grid: FunctionComponent<{word: string; guesses: Guess[]}> = ({guesses = []
 }
 
 const Row: FunctionComponent<{guess: Guess}> = ({guess = undefined}) => {
-  const cellClass = (locked: boolean, correct: boolean) => classNames({
+  const cellClass = (letter: Letter | undefined) => classNames({
     Cell: true,
-    'Cell-guessed': locked && !correct,
-    'Cell-correct': correct
+    'Cell-correct': letter?.state === LetterState.CORRECT,
+    'Cell-wrong': letter?.state === LetterState.WRONG,
+    'Cell-wrong-pos': letter?.state === LetterState.WRONG_POSITION
   })
   return (
     <tr>
       {
         [Array(5).fill(0).map((_, i: number) => 
-          <td className={cellClass(!!guess?.locked, !!guess?.correct)} key={i}>
-              {guess?.word ? guess.word[i] : undefined}
+          <td className={cellClass(guess?.letters[i])} key={i}>
+              {guess?.letters && guess?.letters.length > i ? guess.letters[i].letter : undefined}
           </td>)
         ]
       }
@@ -40,7 +41,8 @@ const Row: FunctionComponent<{guess: Guess}> = ({guess = undefined}) => {
 enum LetterState {
   CORRECT,
   WRONG_POSITION,
-  WRONG
+  WRONG,
+  NONE
 }
 
 type Letter = {
@@ -63,29 +65,43 @@ const guessesInitialState: Guess[] = [
   {letters: [] as Letter[], locked: false, correct: false}
 ]
 
-const word = "JAKOB";
+const goalWord = "JAKOB";
 
 const App: FunctionComponent<{}> = () => {
   const [guesses, setGuesses] = useState<Guess[]>(guessesInitialState)
   const [currentRow, setCurrentRow] = useState(0);
 
   useEffect(() => {
-    const handleKeydown = (event: any) => {
-      if (event.keyCode === 13 && guesses[currentRow].letters.length === 5) {
+    const handleKeydown = (event: KeyboardEvent) => {
+      if (event.key === 'Enter' && guesses[currentRow].letters.length === 5) {
         const updatedGuess = guesses.slice();
-        if (updatedGuess[currentRow].letters.map(x => x.letter).reduce((a: string,b:string) => a + b) === word) {
+        const currentWord = updatedGuess[currentRow].letters.map(x => x.letter).reduce((a: string,b:string) => a + b)
+        if (currentWord === goalWord) {
           updatedGuess[currentRow].correct = true;
         }
-
         
+        updatedGuess[currentRow].letters.forEach((word: Letter, index: number) => {
+          if (word.letter === goalWord[index]) {
+            word.state = LetterState.CORRECT;
+          } else if (goalWord.includes(word.letter)) {
+            word.state = LetterState.WRONG_POSITION;
+          } else if (!goalWord.includes(word.letter)) {
+            word.state = LetterState.WRONG
+          } else {
+            word.state = LetterState.NONE;
+          }
+        })
 
         updatedGuess[currentRow].locked = true;
         setGuesses(updatedGuess)
         
         setCurrentRow(currentRow + 1);
-      } else if (event.keyCode >= 65 && event.keyCode <= 90 && guesses[currentRow].letters.length < 5) {
+      } else if (event.code >= 'KeyA' && event.code <= 'KeyZ' && guesses[currentRow].letters.length < 5) {
         const updatedGuess = guesses.slice();
-        updatedGuess[currentRow].word += event.key.toUpperCase();
+        updatedGuess[currentRow].letters.push({
+          letter: event.key.toUpperCase(), 
+          state: LetterState.NONE
+        });
         setGuesses(updatedGuess)
       }
     };
@@ -98,7 +114,7 @@ const App: FunctionComponent<{}> = () => {
 
   return (
     <div className="App">
-      <Grid word={word} guesses={guesses}/>
+      <Grid word={goalWord} guesses={guesses}/>
     </div>
   );
 }
