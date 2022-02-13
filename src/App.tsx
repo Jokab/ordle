@@ -38,6 +38,14 @@ const Row: FunctionComponent<{guess: Guess}> = ({guess = undefined}) => {
   );
 }
 
+const GameOver: FunctionComponent<{gameOver: boolean}> = ({gameOver = false}) => {
+  if (gameOver) {
+    return <div>Du vann!</div>
+  } else {
+    return <></>
+  }
+}
+
 enum LetterState {
   CORRECT,
   WRONG_POSITION,
@@ -70,16 +78,17 @@ const goalWord = "JAKOB";
 const App: FunctionComponent<{}> = () => {
   const [guesses, setGuesses] = useState<Guess[]>(guessesInitialState)
   const [currentRow, setCurrentRow] = useState(0);
+  const [gameOver, setGameOver] = useState(false);
 
   useEffect(() => {
     const handleKeydown = (event: KeyboardEvent) => {
+      if (gameOver) {
+        return;
+      }
       if (event.key === 'Enter' && guesses[currentRow].letters.length === 5) {
         const updatedGuess = guesses.slice();
         const currentWord = updatedGuess[currentRow].letters.map(x => x.letter).reduce((a: string,b:string) => a + b)
-        if (currentWord === goalWord) {
-          updatedGuess[currentRow].correct = true;
-        }
-        
+
         updatedGuess[currentRow].letters.forEach((word: Letter, index: number) => {
           if (word.letter === goalWord[index]) {
             word.state = LetterState.CORRECT;
@@ -94,8 +103,12 @@ const App: FunctionComponent<{}> = () => {
 
         updatedGuess[currentRow].locked = true;
         setGuesses(updatedGuess)
-        
-        setCurrentRow(currentRow + 1);
+        if (currentWord === goalWord) {
+          updatedGuess[currentRow].correct = true;
+          setGameOver(true);
+        } else {
+          setCurrentRow(currentRow + 1);
+        }
       } else if (event.code >= 'KeyA' && event.code <= 'KeyZ' && guesses[currentRow].letters.length < 5) {
         const updatedGuess = guesses.slice();
         updatedGuess[currentRow].letters.push({
@@ -115,6 +128,7 @@ const App: FunctionComponent<{}> = () => {
   return (
     <div className="App">
       <Grid word={goalWord} guesses={guesses}/>
+      <GameOver gameOver={gameOver}/>
     </div>
   );
 }
