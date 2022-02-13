@@ -116,6 +116,10 @@ const App: FunctionComponent<{}> = () => {
           state: LetterState.NONE
         });
         setGuesses(updatedGuess)
+      } else if (event.code === "Backspace") {
+        const updatedGuess = guesses.slice();
+        updatedGuess[currentRow].letters.pop();
+        setGuesses(updatedGuess)  
       }
     };
     window.addEventListener("keydown", handleKeydown);
