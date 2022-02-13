@@ -11,7 +11,7 @@
   align-items:center;
   justify-content: center;
   flex-direction: row;
-  background-color: #f0f0f0
+  background-color: #c0c0c0
 }
 
 
@@ -23,7 +23,7 @@
 
 .Cell {
   background-color: #a0a0a0;
-  font-size: 2.5rem;
+  font-size: 1.5rem;
   width: 2.5rem;
   height: 2.5rem;
   text-align: center;
@@ -31,7 +31,7 @@
 }
 
 .Cell-correct {
-  background-color: green;
+  background-color: rgb(75, 184, 75);
 }
 
 .Cell-wrong {
@@ -39,7 +39,7 @@
 }
 
 .Cell-wrong-pos {
-  background-color: rgb(197, 197, 41);
+  background-color: rgb(236, 236, 40);
 }
 
 .Letter-red {
