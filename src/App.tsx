@@ -46,6 +46,35 @@ const GameOver: FunctionComponent<{gameOver: boolean}> = ({gameOver = false}) =>
   }
 }
 
+type UsedLetterState = {
+  letter: string;
+  used: boolean;
+}
+
+const UsedLetters: FunctionComponent<{guesses: Guess[]}> = ({guesses = []}) => {
+  const guessedLetters = guesses
+    .map((guess: Guess) => guess.letters)
+    .reduce((a: Letter[], b: Letter[]) => a.concat(b, []))
+    .map(x => x.letter);
+  const keys =
+    (["Q", "W", "E", "R", "T", "Y", "U", "I", "O", "P", "Å",
+    "A", "S", "D", "F", "G", "H", "J", "K", "L", "Ö", "Ä",
+    "Z", "X", "C", "V", "B", "N", "M"]).map((letter: string) => ({letter, used: guessedLetters.includes(letter)}) as UsedLetterState);
+
+  const drawLetters = (keys: UsedLetterState[]) => {
+    const elems = []
+    for(let i = 0; i < keys.length; i++) {
+      elems.push(<span className={keys[i].used ? "Letter-red" : ""}>{keys[i].letter}</span>)
+    }
+    return elems;
+  }
+  return (
+    <div className="UsedLetters">
+      {drawLetters(keys)}
+    </div>
+  )
+}
+
 enum LetterState {
   CORRECT,
   WRONG_POSITION,
@@ -133,6 +162,7 @@ const App: FunctionComponent<{}> = () => {
     <div className="App">
       <Grid word={goalWord} guesses={guesses}/>
       <GameOver gameOver={gameOver}/>
+      <UsedLetters guesses={guesses}/>
     </div>
   );
 }

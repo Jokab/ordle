@@ -3,11 +3,20 @@
   align-items:center;
   justify-content: center;
   height: 100vh;
+  flex-direction: column;
 }
+
+.UsedLetters {
+  display: flex;
+  align-items:center;
+  justify-content: center;
+  flex-direction: row;
+}
+
 
 .Grid {
   width: 24rem;
-  height:24rem;
+  height: 24rem;
   table-layout: fixed;
 }
 
@@ -30,4 +39,8 @@
 
 .Cell-wrong-pos {
   background-color: yellow;
+}
+
+.Letter-red {
+  background-color:red;
 }
