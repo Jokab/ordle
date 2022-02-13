@@ -1,17 +1,16 @@
-import logo from './logo.svg';
 import './App.css';
 import classNames from 'classnames';
 
 import React, { FunctionComponent, useEffect, useState } from 'react';
 
 
-const Grid: FunctionComponent<{word: string; guesses: Guess[]}> = ({word = undefined, guesses = []}) => {
+const Grid: FunctionComponent<{word: string; guesses: Guess[]}> = ({guesses = []}) => {
   return (
     <table className="Grid">
       <tbody>
         {
           [Array(6).fill(0).map((_, i:number) => 
-            <Row word={guesses[i]?.word} locked={guesses[i]?.locked} key={i}/>)
+            <Row guess={guesses[i]} key={i}/>)
           ]
         }
       </tbody>
@@ -19,50 +18,54 @@ const Grid: FunctionComponent<{word: string; guesses: Guess[]}> = ({word = undef
   );
 }
 
-const Row: FunctionComponent<{word: string; locked: boolean}> = ({word = undefined, locked = false}) => {
+const Row: FunctionComponent<{guess: Guess}> = ({guess = undefined}) => {
+  const cellClass = (locked: boolean, correct: boolean) => classNames({
+    Cell: true,
+    'Cell-guessed': locked && !correct,
+    'Cell-correct': correct
+  })
   return (
     <tr>
       {
         [Array(5).fill(0).map((_, i: number) => 
-          <Cell letter={word ? word[i] : undefined} locked={locked} key={i}/>)
+          <td className={cellClass(!!guess?.locked, !!guess?.correct)} key={i}>
+              {guess?.word ? guess.word[i] : undefined}
+          </td>)
         ]
       }
     </tr>
   );
 }
 
-const Cell: FunctionComponent<{letter: string | undefined; locked: boolean}> = ({letter = undefined, locked=false}) => {
-  const cellClass = classNames({
-    Cell: true,
-    'Cell-guessed': locked
-  })
-  return (
-      <td className={cellClass} >{letter}</td>
-  );
-}
-
 type Guess = {
   word: string;
   locked: boolean;
+  correct: boolean;
 }
 
 const guessesInitialState: Guess[] = [
-  {word: "", locked: false},
-  {word: "", locked: false},
-  {word: "", locked: false},
-  {word: "", locked: false},
-  {word: "", locked: false},
-  {word: "", locked: false}
+  {word: "", locked: false, correct: false},
+  {word: "", locked: false, correct: false},
+  {word: "", locked: false, correct: false},
+  {word: "", locked: false, correct: false},
+  {word: "", locked: false, correct: false},
+  {word: "", locked: false, correct: false}
 ]
+
+const word = "JAKOB";
 
 const App: FunctionComponent<{}> = () => {
   const [guesses, setGuesses] = useState<Guess[]>(guessesInitialState)
   const [currentRow, setCurrentRow] = useState(0);
-  
+
   useEffect(() => {
     const handleKeydown = (event: any) => {
       if (event.keyCode === 13 && guesses[currentRow].word.length === 5) {
         const updatedGuess = guesses.slice();
+        if (updatedGuess[currentRow].word === word) {
+          updatedGuess[currentRow].correct = true;
+        }
+
         updatedGuess[currentRow].locked = true;
         setGuesses(updatedGuess)
         
@@ -79,7 +82,6 @@ const App: FunctionComponent<{}> = () => {
     }
   })
 
-  const word = "HEJSAN";
 
   return (
     <div className="App">
@@ -87,7 +89,5 @@ const App: FunctionComponent<{}> = () => {
     </div>
   );
 }
-
-
 
 export default App;

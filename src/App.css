@@ -3,7 +3,6 @@
   align-items:center;
   justify-content: center;
   height: 100vh;
-  /* width: 100%; */
 }
 
 .Grid {
@@ -23,4 +22,8 @@
 
 .Cell-guessed {
   background-color: red;
+}
+
+.Cell-correct {
+  background-color: purple;
 }
