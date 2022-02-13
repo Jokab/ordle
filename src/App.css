@@ -20,3 +20,7 @@
   text-align: center;
   overflow: hidden;
 }
+
+.Cell-guessed {
+  background-color: red;
+}
