@@ -6,8 +6,8 @@ import React, { FunctionComponent, useEffect, useState } from 'react';
 
 const Grid: FunctionComponent<{word: string; guesses: Guess[]}> = ({guesses = []}) => {
   return (
-    <table className="Grid">
-      <tbody>
+    <table className="w-96 h-96">
+      <tbody className="border-2">
         {
           [Array(6).fill(0).map((_, i:number) => 
             <Row guess={guesses[i]} key={i}/>)
@@ -20,11 +20,11 @@ const Grid: FunctionComponent<{word: string; guesses: Guess[]}> = ({guesses = []
 
 const Row: FunctionComponent<{guess: Guess}> = ({guess = undefined}) => {
   const cellClass = (letter: Letter | undefined) => classNames({
-    Cell: true,
-    'Cell-correct': letter?.state === LetterState.CORRECT,
-    'Cell-wrong': letter?.state === LetterState.WRONG,
-    'Cell-wrong-pos': letter?.state === LetterState.WRONG_POSITION
-  })
+    'bg-gray-400 text-2xl w-10 h-10 text-center truncate': true,
+    'bg-green-400': letter?.state === LetterState.CORRECT,
+    'bg-gray-600': letter?.state === LetterState.WRONG,
+    'bg-yellow-400': letter?.state === LetterState.WRONG_POSITION
+  });
   return (
     <tr>
       {
@@ -66,23 +66,24 @@ const UsedLetters: FunctionComponent<{guesses: Guess[]}> = ({guesses = []}) => {
     const elems = []
     for (let i = startIndex; i < endIndex; i++) {
       const cellClass = (letter: Letter | undefined) => classNames({
-        'Cell-correct': letter?.state === LetterState.CORRECT,
-        'Cell-wrong': letter?.state === LetterState.WRONG,
-        'Cell-wrong-pos': letter?.state === LetterState.WRONG_POSITION
-      })
+        'bg-gray-300 text-2xl text-center truncate': true,
+        'bg-green-400': letter?.state === LetterState.CORRECT,
+        'bg-gray-400': letter?.state === LetterState.WRONG,
+        'bg-yellow-300': letter?.state === LetterState.WRONG_POSITION
+      });
       elems.push(<span className={cellClass(keys[i])} key={i}>{keys[i].letter}</span>)
     }
     return elems;
   }
   return (
-    <div className="UsedLetters">
-      <div className="UsedLetters-wrapper">
+    <div className="flex items-center justify-center flex-col">
+      <div className="flex mt-2 items-center justify-between bg-gray-300 w-80">
         {drawLetters(keys, 0, 11)}
       </div>
-      <div className="UsedLetters-wrapper">
+      <div className="flex mt-2 items-center justify-between bg-gray-300 w-80">
         {drawLetters(keys, 11, 22)}
       </div>
-      <div className="UsedLetters-small">
+      <div className="flex mt-2 items-center justify-between bg-gray-300 w-48">
         {drawLetters(keys, 22, 29)}
       </div>
     </div>
@@ -173,7 +174,7 @@ const App: FunctionComponent<{}> = () => {
 
 
   return (
-    <div className="App">
+    <div className="flex flex-col justify-center items-center h-screen">
       <Grid word={goalWord} guesses={guesses}/>
       <GameOver gameOver={gameOver}/>
       <UsedLetters guesses={guesses}/>
