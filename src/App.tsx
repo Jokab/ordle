@@ -40,7 +40,7 @@ const Row: FunctionComponent<{guess: Guess}> = ({guess = undefined}) => {
 
 const GameOver: FunctionComponent<{gameOver: boolean}> = ({gameOver = false}) => {
   if (gameOver) {
-    return <div>Du vann!</div>
+    return <div className="mb-10 text-2xl">Du vann!</div>
   } else {
     return <></>
   }
@@ -175,8 +175,8 @@ const App: FunctionComponent<{}> = () => {
 
   return (
     <div className="flex flex-col justify-center items-center h-screen">
-      <Grid word={goalWord} guesses={guesses}/>
       <GameOver gameOver={gameOver}/>
+      <Grid word={goalWord} guesses={guesses}/>
       <UsedLetters guesses={guesses}/>
     </div>
   );
