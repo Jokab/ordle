@@ -6,7 +6,7 @@ import React, { FunctionComponent, useEffect, useState } from 'react';
 
 const Grid: FunctionComponent<{word: string; guesses: Guess[]}> = ({guesses = []}) => {
   return (
-    <table className="w-96 h-96">
+    <table className="w-80 h-80">
       <tbody className="border-2">
         {
           [Array(6).fill(0).map((_, i:number) => 
@@ -20,7 +20,7 @@ const Grid: FunctionComponent<{word: string; guesses: Guess[]}> = ({guesses = []
 
 const Row: FunctionComponent<{guess: Guess}> = ({guess = undefined}) => {
   const cellClass = (letter: Letter | undefined) => classNames({
-    'bg-gray-400 text-2xl w-10 h-10 text-center truncate': true,
+    'bg-gray-400 text-2xl w-10 h-10 text-center truncate border-2': true,
     'bg-green-400': letter?.state === LetterState.CORRECT,
     'bg-gray-600': letter?.state === LetterState.WRONG,
     'bg-yellow-400': letter?.state === LetterState.WRONG_POSITION
