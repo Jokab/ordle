@@ -66,9 +66,9 @@ const UsedLetters: FunctionComponent<{guesses: Guess[]}> = ({guesses = []}) => {
     const elems = []
     for (let i = startIndex; i < endIndex; i++) {
       const cellClass = (letter: Letter | undefined) => classNames({
-        'bg-gray-300 text-2xl text-center truncate': true,
+        'bg-gray-400 text-2xl text-center truncate w-5': true,
         'bg-green-400': letter?.state === LetterState.CORRECT,
-        'bg-gray-400': letter?.state === LetterState.WRONG,
+        'bg-gray-600': letter?.state === LetterState.WRONG,
         'bg-yellow-300': letter?.state === LetterState.WRONG_POSITION
       });
       elems.push(<span className={cellClass(keys[i])} key={i}>{keys[i].letter}</span>)
@@ -77,13 +77,13 @@ const UsedLetters: FunctionComponent<{guesses: Guess[]}> = ({guesses = []}) => {
   }
   return (
     <div className="flex items-center justify-center flex-col">
-      <div className="flex mt-2 items-center justify-between bg-gray-300 w-80">
+      <div className="flex mt-2 items-center justify-between bg-gray-400 w-80">
         {drawLetters(keys, 0, 11)}
       </div>
-      <div className="flex mt-2 items-center justify-between bg-gray-300 w-80">
+      <div className="flex mt-2 items-center justify-between bg-gray-400 w-80">
         {drawLetters(keys, 11, 22)}
       </div>
-      <div className="flex mt-2 items-center justify-between bg-gray-300 w-48">
+      <div className="flex mt-2 items-center justify-between bg-gray-400 w-48">
         {drawLetters(keys, 22, 29)}
       </div>
     </div>
