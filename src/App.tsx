@@ -38,9 +38,11 @@ const Row: FunctionComponent<{guess: Guess}> = ({guess = undefined}) => {
   );
 }
 
-const GameOver: FunctionComponent<{gameOver: boolean}> = ({gameOver = false}) => {
-  if (gameOver) {
+const GameOver: FunctionComponent<{gameState: GameState | undefined}> = ({gameState = undefined}) => {
+  if (gameState === GameState.WIN) {
     return <div className="mb-10 text-2xl">Du vann!</div>
+  } else if (gameState === GameState.LOSS) {
+      return <div className="mb-10 text-2xl">Det gick inte denna gången! :-(</div>
   } else {
     return <></>
   }
@@ -121,16 +123,22 @@ const guessesInitialState: Guess[] = [
   {letters: [] as Letter[], locked: false, correct: false}
 ]
 
+enum GameState {
+  WIN,
+  LOSS,
+  PENDING
+}
+
 const goalWord = "JAKOB";
 
 const App: FunctionComponent<{}> = () => {
   const [guesses, setGuesses] = useState<Guess[]>(guessesInitialState)
   const [currentRow, setCurrentRow] = useState(0);
-  const [gameOver, setGameOver] = useState(false);
+  const [gameState, setGameState] = useState(GameState.PENDING);
 
   useEffect(() => {
     const handleKeydown = (event: KeyboardEvent) => {
-      if (gameOver) {
+      if (gameState == GameState.WIN || gameState == GameState.LOSS) {
         return;
       }
       if (event.key === 'Enter' && guesses[currentRow].letters.length === 5) {
@@ -153,7 +161,9 @@ const App: FunctionComponent<{}> = () => {
         setGuesses(updatedGuess)
         if (currentWord === goalWord) {
           updatedGuess[currentRow].correct = true;
-          setGameOver(true);
+          setGameState(GameState.WIN);
+        } else if (currentWord !== goalWord && currentRow === 5) {
+          setGameState(GameState.LOSS);
         } else {
           setCurrentRow(currentRow + 1);
         }
@@ -179,7 +189,7 @@ const App: FunctionComponent<{}> = () => {
 
   return (
     <div className="flex flex-col justify-center items-center h-screen">
-      <GameOver gameOver={gameOver}/>
+      <GameOver gameState={gameState}/>
       <Grid word={goalWord} guesses={guesses}/>
       <UsedLetters guesses={guesses}/>
     </div>
