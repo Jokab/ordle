@@ -62,21 +62,29 @@ const UsedLetters: FunctionComponent<{guesses: Guess[]}> = ({guesses = []}) => {
     }
   })
 
-  const drawLetters = (keys: Letter[]) => {
+  const drawLetters = (keys: Letter[], startIndex: number, endIndex: number) => {
     const elems = []
-    for (let i = 0; i < keys.length; i++) {
+    for (let i = startIndex; i < endIndex; i++) {
       const cellClass = (letter: Letter | undefined) => classNames({
         'Cell-correct': letter?.state === LetterState.CORRECT,
         'Cell-wrong': letter?.state === LetterState.WRONG,
         'Cell-wrong-pos': letter?.state === LetterState.WRONG_POSITION
       })
-      elems.push(<span className={cellClass(keys[i])}>{keys[i].letter}</span>)
+      elems.push(<span className={cellClass(keys[i])} key={i}>{keys[i].letter}</span>)
     }
     return elems;
   }
   return (
     <div className="UsedLetters">
-      {drawLetters(keys)}
+      <div className="UsedLetters-wrapper">
+        {drawLetters(keys, 0, 11)}
+      </div>
+      <div className="UsedLetters-wrapper">
+        {drawLetters(keys, 11, 22)}
+      </div>
+      <div className="UsedLetters-small">
+        {drawLetters(keys, 22, 29)}
+      </div>
     </div>
   )
 }

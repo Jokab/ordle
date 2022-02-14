@@ -8,10 +8,29 @@
 
 .UsedLetters {
   display: flex;
-  align-items:center;
+  align-items: center;
   justify-content: center;
-  flex-direction: row;
-  background-color: #c0c0c0
+  flex-direction: column;
+}
+
+.UsedLetters-wrapper {
+  display: flex;
+  margin-top: 0.5rem;
+  align-items: center;
+  justify-content: space-between;
+  background-color: #c0c0c0;
+  width: 20rem;
+  font-size: 1.5rem
+}
+
+.UsedLetters-small {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  background-color: #c0c0c0;
+  width: 12rem;
+  font-size: 1.5rem;
+  margin-top: 0.5rem;
 }
 
 
