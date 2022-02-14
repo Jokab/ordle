@@ -142,20 +142,39 @@ const App: FunctionComponent<{}> = () => {
         return;
       }
       if (event.key === 'Enter' && guesses[currentRow].letters.length === 5) {
+        // User has locked in a guess
         const updatedGuess = guesses.slice();
         const currentWord = updatedGuess[currentRow].letters.map(x => x.letter).reduce((a: string,b:string) => a + b)
 
-        updatedGuess[currentRow].letters.forEach((word: Letter, index: number) => {
-          if (word.letter === goalWord[index]) {
-            word.state = LetterState.CORRECT;
-          } else if (goalWord.includes(word.letter)) {
-            word.state = LetterState.WRONG_POSITION;
-          } else if (!goalWord.includes(word.letter)) {
-            word.state = LetterState.WRONG
-          } else {
-            word.state = LetterState.NONE;
+        const markedLetters: string[] = []
+        // First, make a pass over all correct letters since these have priority of being marked
+        updatedGuess[currentRow].letters.forEach((letter: Letter, index: number) => {
+          if (letter.letter === goalWord[index]) {
+            letter.state = LetterState.CORRECT;
+            markedLetters.push(letter.letter);
           }
-        })
+        });
+
+        // Second, make a pass over non processed letters since these have lower priority
+        updatedGuess[currentRow].letters
+          .filter(letter => letter.state !== LetterState.CORRECT)
+          .forEach((letter: Letter) => {
+            if (goalWord.includes(letter.letter)) {
+              if (markedLetters.filter(x => x === letter.letter).length < goalWord.split('').filter(x => x === letter.letter).length) {
+                // Only want to mark letter as wrong position if there are more letters in the goal word than the ones
+                // that have been placed correctly
+                letter.state = LetterState.WRONG_POSITION;
+              } else {
+                letter.state = LetterState.WRONG
+              }
+            } else if (!goalWord.includes(letter.letter)) {
+              letter.state = LetterState.WRONG
+            } else {
+              letter.state = LetterState.NONE;
+            }
+            markedLetters.push(letter.letter);
+          }
+        );
 
         updatedGuess[currentRow].locked = true;
         setGuesses(updatedGuess)
