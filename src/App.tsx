@@ -129,6 +129,7 @@ enum GameState {
   LOSS,
   PENDING
 }
+const goalWord = wordlist[Math.floor(Math.random() * wordlist.length)].toUpperCase();
 
 
 const App: FunctionComponent<{}> = () => {
@@ -136,7 +137,6 @@ const App: FunctionComponent<{}> = () => {
   const [currentRow, setCurrentRow] = useState(0);
   const [gameState, setGameState] = useState(GameState.PENDING);
 
-  const goalWord = wordlist[Math.floor(Math.random() * wordlist.length)].toUpperCase();
 
   useEffect(() => {
     const handleKeydown = (event: KeyboardEvent) => {
