@@ -1,6 +1,6 @@
 import './App.css';
 import classNames from 'classnames';
-import words from './words';
+import wordlist from './wordlist';
 
 import React, { FunctionComponent, useEffect, useState } from 'react';
 
@@ -130,24 +130,24 @@ enum GameState {
   PENDING
 }
 
-const goalWord = words[Math.floor(Math.random() * words.length)].toUpperCase();
 
 const App: FunctionComponent<{}> = () => {
   const [guesses, setGuesses] = useState<Guess[]>(guessesInitialState)
   const [currentRow, setCurrentRow] = useState(0);
   const [gameState, setGameState] = useState(GameState.PENDING);
 
+  const goalWord = wordlist[Math.floor(Math.random() * wordlist.length)].toUpperCase();
+
   useEffect(() => {
     const handleKeydown = (event: KeyboardEvent) => {
-      if (gameState == GameState.WIN || gameState == GameState.LOSS) {
+      if (gameState === GameState.WIN || gameState === GameState.LOSS) {
         return;
       }
       if (event.key === 'Enter' && guesses[currentRow].letters.length === 5) {
         // User has locked in a guess
         const updatedGuess = guesses.slice();
         const currentWord = updatedGuess[currentRow].letters.map(x => x.letter).reduce((a: string,b:string) => a + b)
-        if (!words.includes(currentWord.toLowerCase())) {
-          console.log("not available!")
+        if (!wordlist.includes(currentWord)) {
           return;
         }
 
@@ -191,10 +191,26 @@ const App: FunctionComponent<{}> = () => {
         } else {
           setCurrentRow(currentRow + 1);
         }
-      } else if (event.code >= 'KeyA' && event.code <= 'KeyZ' && guesses[currentRow].letters.length < 5) {
+      } else if ((event.code >= 'KeyA' && event.code <= 'KeyZ' && guesses[currentRow].letters.length < 5) ||
+          event.code === 'BracketLeft' || event.code === 'Quote' || event.code === 'Semicolon') {
+        let letter = "";
+        // Swedish special letters are really weirdly represented in event codes
+        switch (event.code) {
+          case 'BracketLeft':
+            letter = "Å";
+            break;
+          case 'Quote':
+            letter = 'Ä';
+            break;
+          case 'Semicolon':
+            letter = 'Ö';
+            break;
+          default:
+            letter = event.key.toUpperCase();
+        }
         const updatedGuess = guesses.slice();
         updatedGuess[currentRow].letters.push({
-          letter: event.key.toUpperCase(), 
+          letter: letter,
           state: LetterState.NONE
         });
         setGuesses(updatedGuess)
