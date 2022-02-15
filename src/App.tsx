@@ -1,5 +1,6 @@
 import './App.css';
 import classNames from 'classnames';
+import words from './words';
 
 import React, { FunctionComponent, useEffect, useState } from 'react';
 
@@ -129,7 +130,7 @@ enum GameState {
   PENDING
 }
 
-const goalWord = "JAKOB";
+const goalWord = words[Math.floor(Math.random() * words.length)].toUpperCase();
 
 const App: FunctionComponent<{}> = () => {
   const [guesses, setGuesses] = useState<Guess[]>(guessesInitialState)
@@ -145,6 +146,10 @@ const App: FunctionComponent<{}> = () => {
         // User has locked in a guess
         const updatedGuess = guesses.slice();
         const currentWord = updatedGuess[currentRow].letters.map(x => x.letter).reduce((a: string,b:string) => a + b)
+        if (!words.includes(currentWord.toLowerCase())) {
+          console.log("not available!")
+          return;
+        }
 
         const markedLetters: string[] = []
         // First, make a pass over all correct letters since these have priority of being marked
