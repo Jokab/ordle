@@ -43,7 +43,7 @@ const GameOver: FunctionComponent<{gameState: GameState | undefined}> = ({gameSt
   if (gameState === GameState.WIN) {
     return <div className="mb-10 text-2xl">Du vann!</div>
   } else if (gameState === GameState.LOSS) {
-      return <div className="mb-10 text-2xl">Det gick inte denna gången! :-(</div>
+      return <div className="mb-10 text-2xl">Det gick inte denna gången! :-( Rätt ord var: {goalWord}</div>
   } else {
     return <></>
   }
@@ -129,14 +129,13 @@ enum GameState {
   LOSS,
   PENDING
 }
-const goalWord = wordlist[Math.floor(Math.random() * wordlist.length)].toUpperCase();
 
+const goalWord = wordlist[Math.floor(Math.random() * wordlist.length)].toUpperCase();
 
 const App: FunctionComponent<{}> = () => {
   const [guesses, setGuesses] = useState<Guess[]>(guessesInitialState)
   const [currentRow, setCurrentRow] = useState(0);
   const [gameState, setGameState] = useState(GameState.PENDING);
-
 
   useEffect(() => {
     const handleKeydown = (event: KeyboardEvent) => {
