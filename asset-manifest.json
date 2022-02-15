@@ -1,0 +1,13 @@
+{
+  "files": {
+    "main.css": "/ordle/static/css/main.ea1ec2df.css",
+    "main.js": "/ordle/static/js/main.8a1ca33c.js",
+    "index.html": "/ordle/index.html",
+    "main.ea1ec2df.css.map": "/ordle/static/css/main.ea1ec2df.css.map",
+    "main.8a1ca33c.js.map": "/ordle/static/js/main.8a1ca33c.js.map"
+  },
+  "entrypoints": [
+    "static/css/main.ea1ec2df.css",
+    "static/js/main.8a1ca33c.js"
+  ]
+}
