@@ -3,6 +3,7 @@ import classNames from 'classnames';
 import wordlist from './wordlist';
 
 import React, { FunctionComponent, useCallback, useEffect, useState } from 'react';
+import { GameState, Guess, guessesInitialState, Letter, LetterState } from './types';
 
 
 const Grid: FunctionComponent<{word: string; guesses: Guess[]}> = ({guesses = []}) => {
@@ -99,39 +100,6 @@ const UsedLetters: FunctionComponent<{guesses: Guess[]; click: Function}> = ({gu
       </div>
     </div>
   )
-}
-
-enum LetterState {
-  CORRECT,
-  WRONG_POSITION,
-  WRONG,
-  NONE
-}
-
-type Letter = {
-  letter: string;
-  state: LetterState;
-}
-
-type Guess = {
-  letters: Letter[];
-  locked: boolean;
-  correct: boolean;
-}
-
-const guessesInitialState: Guess[] = [
-  {letters: [] as Letter[], locked: false, correct: false},
-  {letters: [] as Letter[], locked: false, correct: false},
-  {letters: [] as Letter[], locked: false, correct: false},
-  {letters: [] as Letter[], locked: false, correct: false},
-  {letters: [] as Letter[], locked: false, correct: false},
-  {letters: [] as Letter[], locked: false, correct: false}
-]
-
-enum GameState {
-  WIN,
-  LOSS,
-  PENDING
 }
 
 const goalWord = wordlist[Math.floor(Math.random() * wordlist.length)].toUpperCase();
