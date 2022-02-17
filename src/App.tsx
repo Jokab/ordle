@@ -2,7 +2,7 @@ import './App.css';
 import classNames from 'classnames';
 import wordlist from './wordlist';
 
-import React, { FunctionComponent, useCallback, useEffect, useState } from 'react';
+import React, { FunctionComponent, MouseEventHandler, useCallback, useEffect, useState } from 'react';
 import { GameState, Guess, guessesInitialState, Letter, LetterState } from './types';
 
 
@@ -50,53 +50,53 @@ const GameOver: FunctionComponent<{gameState: GameState | undefined}> = ({gameSt
   }
 }
 
-const UsedLetters: FunctionComponent<{guesses: Guess[]; click: Function}> = ({guesses = [], click = () => {}}) => {
-  const [keys, setKeys] = useState((["Q", "W", "E", "R", "T", "Y", "U", "I", "O", "P", "Å",
+const Keyboard: FunctionComponent<{guesses: Guess[]; letterClick: MouseEventHandler<HTMLSpanElement> | undefined; enterClick: MouseEventHandler<HTMLDivElement> | undefined; backspaceClick: MouseEventHandler<HTMLDivElement> | undefined}> = ({guesses = [], letterClick = undefined, enterClick = undefined, backspaceClick = undefined}) => {
+  const [usedKeys, setUsedKeys] = useState((["Q", "W", "E", "R", "T", "Y", "U", "I", "O", "P", "Å",
     "A", "S", "D", "F", "G", "H", "J", "K", "L", "Ö", "Ä",
     "Z", "X", "C", "V", "B", "N", "M"]).map((letter: string) => ({letter, state: LetterState.NONE}) as Letter))
 
-    const handleClick = (e: any) => {
-    click(e);
-  }
-
   useEffect(() => {
     const guessedLetters = guesses
-    .map((guess: Guess) => guess.letters)
-    .reduce((a: Letter[], b: Letter[]) => a.concat(b, []))
+      .map((guess: Guess) => guess.letters)
+      .reduce((a: Letter[], b: Letter[]) => a.concat(b, []))
 
-    const newKeys = keys.slice();
+    const newKeys = usedKeys.slice();
     newKeys.forEach(x => {
       const matchingGuess = guessedLetters.filter(y => x.letter === y.letter)
       if (matchingGuess && matchingGuess.length > 0) {
         x.state = matchingGuess[0].state;
       }
     });
-    setKeys(keys);
-  }, [setKeys, guesses, keys]);
+    setUsedKeys(usedKeys);
+  }, [setUsedKeys, guesses, usedKeys]);
 
   const drawLetters = (keys: Letter[], startIndex: number, endIndex: number) => {
     const elems = []
     for (let i = startIndex; i < endIndex; i++) {
       const cellClass = (letter: Letter | undefined) => classNames({
-        'bg-gray-400 text-2xl text-center truncate w-5': true,
+        'bg-gray-400 text-xl text-center truncate w-5': true,
         'bg-green-400': letter?.state === LetterState.CORRECT,
         'bg-gray-600': letter?.state === LetterState.WRONG,
         'bg-yellow-300': letter?.state === LetterState.WRONG_POSITION
       });
-      elems.push(<span className={cellClass(keys[i])} key={i} onClick={handleClick}>{keys[i].letter}</span>)
+      elems.push(<span className={cellClass(keys[i])} key={i} onClick={letterClick}>{keys[i].letter}</span>)
     }
     return elems;
   }
   return (
     <div className="flex items-center justify-center flex-col">
       <div className="flex mt-2 items-center justify-between bg-gray-400 w-80">
-        {drawLetters(keys, 0, 11)}
+        {drawLetters(usedKeys, 0, 11)}
       </div>
       <div className="flex mt-2 items-center justify-between bg-gray-400 w-80">
-        {drawLetters(keys, 11, 22)}
+        {drawLetters(usedKeys, 11, 22)}
       </div>
-      <div className="flex mt-2 items-center justify-between bg-gray-400 w-48">
-        {drawLetters(keys, 22, 29)}
+      <div className="flex mt-2 items-center justify-between">
+        <div className="mr-4 border-2 border-zinc-700 p-0 bg-gray-400 font-medium" onClick={enterClick}>Enter</div>
+        <div className="flex items-center justify-between bg-gray-400 w-48">
+          {drawLetters(usedKeys, 22, 29)}
+        </div>
+        <div className="ml-4 border-2 border-zinc-700 p-0 bg-gray-400 font-medium" onClick={backspaceClick}>Radera</div>
       </div>
     </div>
   )
@@ -227,9 +227,7 @@ const App: FunctionComponent<{}> = () => {
     <div className="flex flex-col justify-center items-center h-screen">
       <GameOver gameState={gameState}/>
       <Grid word={goalWord} guesses={guesses}/>
-      <UsedLetters guesses={guesses} click={handleLetterClick}/>
-      <div onClick={handleEnterClick}>Enter</div>
-      <div onClick={handleBackspaceClick}>Radera</div>
+      <Keyboard guesses={guesses} letterClick={handleLetterClick} enterClick={handleEnterClick} backspaceClick={handleBackspaceClick}/>
     </div>
   );
 }
