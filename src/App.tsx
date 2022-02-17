@@ -72,7 +72,7 @@ const UsedLetters: FunctionComponent<{guesses: Guess[]; click: Function}> = ({gu
       }
     });
     setKeys(keys);
-  });
+  }, [setKeys, guesses, keys]);
 
   const drawLetters = (keys: Letter[], startIndex: number, endIndex: number) => {
     const elems = []
