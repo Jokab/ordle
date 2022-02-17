@@ -8,7 +8,7 @@ import { GameState, Guess, guessesInitialState, Letter, LetterState } from './ty
 
 const Grid: FunctionComponent<{word: string; guesses: Guess[]}> = ({guesses = []}) => {
   return (
-    <table className="w-80 h-80">
+    <table className="w-96 h-96 table-fixed">
       <tbody className="border-2">
         {
           [Array(6).fill(0).map((_, i:number) => 
@@ -22,7 +22,7 @@ const Grid: FunctionComponent<{word: string; guesses: Guess[]}> = ({guesses = []
 
 const Row: FunctionComponent<{guess: Guess}> = ({guess = undefined}) => {
   const cellClass = (letter: Letter | undefined) => classNames({
-    'bg-gray-400 text-2xl w-10 h-10 text-center truncate border-2': true,
+    'bg-gray-400 text-3xl w-10 h-10 text-center truncate border-2': true,
     'bg-green-400': letter?.state === LetterState.CORRECT,
     'bg-gray-600': letter?.state === LetterState.WRONG,
     'bg-yellow-400': letter?.state === LetterState.WRONG_POSITION
@@ -74,7 +74,7 @@ const Keyboard: FunctionComponent<{guesses: Guess[]; letterClick: MouseEventHand
     const elems = []
     for (let i = startIndex; i < endIndex; i++) {
       const cellClass = (letter: Letter | undefined) => classNames({
-        'bg-gray-400 text-xl text-center truncate w-5': true,
+        'text-3xl text-center truncate w-8 border-2 border-zinc-500 rounded-md bg-zinc-300': true,
         'bg-green-400': letter?.state === LetterState.CORRECT,
         'bg-gray-600': letter?.state === LetterState.WRONG,
         'bg-yellow-300': letter?.state === LetterState.WRONG_POSITION
@@ -84,19 +84,19 @@ const Keyboard: FunctionComponent<{guesses: Guess[]; letterClick: MouseEventHand
     return elems;
   }
   return (
-    <div className="flex items-center justify-center flex-col">
-      <div className="flex mt-2 items-center justify-between bg-gray-400 w-80">
+    <div className="flex items-center justify-center flex-col w-96">
+      <div className="flex mt-2 items-center justify-between w-96">
         {drawLetters(usedKeys, 0, 11)}
       </div>
-      <div className="flex mt-2 items-center justify-between bg-gray-400 w-80">
+      <div className="flex mt-2 items-center justify-between w-96">
         {drawLetters(usedKeys, 11, 22)}
       </div>
-      <div className="flex mt-2 items-center justify-between">
-        <div className="mr-4 border-2 border-zinc-700 p-0 bg-gray-400 font-medium" onClick={enterClick}>Enter</div>
-        <div className="flex items-center justify-between bg-gray-400 w-48">
+      <div className="flex mt-2 items-center justify-between w-96">
+        <div className="border-2 border-zinc-500 rounded-md font-medium text-2xl  p-1 bg-zinc-300" onClick={enterClick}>Enter</div>
+        <div className="flex items-center justify-between w-56">
           {drawLetters(usedKeys, 22, 29)}
         </div>
-        <div className="ml-4 border-2 border-zinc-700 p-0 bg-gray-400 font-medium" onClick={backspaceClick}>Radera</div>
+        <div className="border-2 border-zinc-500 rounded-md font-medium text-2xl p-1 bg-zinc-300" onClick={backspaceClick}>Radera</div>
       </div>
     </div>
   )
@@ -224,7 +224,7 @@ const App: FunctionComponent<{}> = () => {
   };
 
   return (
-    <div className="flex flex-col justify-center items-center h-screen">
+    <div className="flex flex-col justify-center items-center h-screen w-96 my-0 mx-auto">
       <GameOver gameState={gameState}/>
       <Grid word={goalWord} guesses={guesses}/>
       <Keyboard guesses={guesses} letterClick={handleLetterClick} enterClick={handleEnterClick} backspaceClick={handleBackspaceClick}/>
