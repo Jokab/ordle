@@ -23,8 +23,8 @@ const Grid: FunctionComponent<{word: string; guesses: Guess[]}> = ({guesses = []
 const Row: FunctionComponent<{guess: Guess}> = ({guess = undefined}) => {
   const cellClass = (letter: Letter | undefined) => classNames({
     'bg-gray-400 text-3xl w-10 h-10 text-center truncate border-2': true,
-    'bg-green-400': letter?.state === LetterState.CORRECT,
-    'bg-gray-600': letter?.state === LetterState.WRONG,
+    'bg-green-500': letter?.state === LetterState.CORRECT,
+    'bg-gray-500': letter?.state === LetterState.WRONG,
     'bg-yellow-400': letter?.state === LetterState.WRONG_POSITION
   });
   return (
@@ -76,7 +76,7 @@ const Keyboard: FunctionComponent<{guesses: Guess[]; letterClick: MouseEventHand
       const cellClass = (letter: Letter | undefined) => classNames({
         'text-3xl text-center truncate w-8 border-2 border-zinc-500 rounded-md bg-zinc-300': true,
         'bg-green-400': letter?.state === LetterState.CORRECT,
-        'bg-gray-600': letter?.state === LetterState.WRONG,
+        'bg-gray-500': letter?.state === LetterState.WRONG,
         'bg-yellow-300': letter?.state === LetterState.WRONG_POSITION
       });
       elems.push(<span className={cellClass(keys[i])} key={i} onClick={letterClick}>{keys[i].letter}</span>)
@@ -225,6 +225,7 @@ const App: FunctionComponent<{}> = () => {
 
   return (
     <div className="flex flex-col justify-center items-center h-screen w-96 my-0 mx-auto">
+      <div className="md:hidden text-5xl absolute top-0 w-full text-center border-2 border-zinc-400 bg-gray-300">Ordle</div>
       <GameOver gameState={gameState}/>
       <Grid word={goalWord} guesses={guesses}/>
       <Keyboard guesses={guesses} letterClick={handleLetterClick} enterClick={handleEnterClick} backspaceClick={handleBackspaceClick}/>
