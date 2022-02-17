@@ -74,7 +74,7 @@ const Keyboard: FunctionComponent<{guesses: Guess[]; letterClick: MouseEventHand
     const elems = []
     for (let i = startIndex; i < endIndex; i++) {
       const cellClass = (letter: Letter | undefined) => classNames({
-        'text-3xl text-center truncate w-8 border-2 border-zinc-500 rounded-md bg-zinc-300': true,
+        'text-3xl text-center truncate w-9 border-2 border-zinc-500 rounded-md bg-zinc-300': true,
         'bg-green-400': letter?.state === LetterState.CORRECT,
         'bg-gray-500': letter?.state === LetterState.WRONG,
         'bg-yellow-300': letter?.state === LetterState.WRONG_POSITION
