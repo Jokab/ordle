@@ -224,11 +224,13 @@ const App: FunctionComponent<{}> = () => {
   };
 
   return (
-    <div className="flex flex-col justify-center items-center h-screen w-96 my-0 mx-auto">
-      <div className="md:hidden text-5xl absolute top-0 w-full text-center border-2 border-zinc-400 bg-gray-300">Ordle</div>
-      <GameOver gameState={gameState}/>
-      <Grid word={goalWord} guesses={guesses}/>
-      <Keyboard guesses={guesses} letterClick={handleLetterClick} enterClick={handleEnterClick} backspaceClick={handleBackspaceClick}/>
+    <div className="h-screen w-screen bg-zinc-100">
+      <div className="flex flex-col justify-center items-center h-screen w-96 my-0 mx-auto">
+        <div className="md:hidden text-5xl absolute top-0 w-full text-center border-2 border-zinc-400 bg-gray-300">Ordle</div>
+        <GameOver gameState={gameState}/>
+        <Grid word={goalWord} guesses={guesses}/>
+        <Keyboard guesses={guesses} letterClick={handleLetterClick} enterClick={handleEnterClick} backspaceClick={handleBackspaceClick}/>
+      </div>
     </div>
   );
 }
