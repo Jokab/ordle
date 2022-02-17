@@ -2,7 +2,7 @@ import './App.css';
 import classNames from 'classnames';
 import wordlist from './wordlist';
 
-import React, { FunctionComponent, useEffect, useState } from 'react';
+import React, { FunctionComponent, useCallback, useEffect, useState } from 'react';
 
 
 const Grid: FunctionComponent<{word: string; guesses: Guess[]}> = ({guesses = []}) => {
@@ -49,10 +49,14 @@ const GameOver: FunctionComponent<{gameState: GameState | undefined}> = ({gameSt
   }
 }
 
-const UsedLetters: FunctionComponent<{guesses: Guess[]}> = ({guesses = []}) => {
+const UsedLetters: FunctionComponent<{guesses: Guess[]; click: Function}> = ({guesses = [], click = () => {}}) => {
   const [keys, setKeys] = useState((["Q", "W", "E", "R", "T", "Y", "U", "I", "O", "P", "Å",
     "A", "S", "D", "F", "G", "H", "J", "K", "L", "Ö", "Ä",
     "Z", "X", "C", "V", "B", "N", "M"]).map((letter: string) => ({letter, state: LetterState.NONE}) as Letter))
+
+    const handleClick = (e: any) => {
+    click(e);
+  }
 
   useEffect(() => {
     const guessedLetters = guesses
@@ -78,7 +82,7 @@ const UsedLetters: FunctionComponent<{guesses: Guess[]}> = ({guesses = []}) => {
         'bg-gray-600': letter?.state === LetterState.WRONG,
         'bg-yellow-300': letter?.state === LetterState.WRONG_POSITION
       });
-      elems.push(<span className={cellClass(keys[i])} key={i}>{keys[i].letter}</span>)
+      elems.push(<span className={cellClass(keys[i])} key={i} onClick={handleClick}>{keys[i].letter}</span>)
     }
     return elems;
   }
@@ -137,100 +141,127 @@ const App: FunctionComponent<{}> = () => {
   const [currentRow, setCurrentRow] = useState(0);
   const [gameState, setGameState] = useState(GameState.PENDING);
 
+  const handleEnterKey = useCallback(() => {
+    // User has locked in a guess
+    const updatedGuess = guesses.slice();
+    const currentWord = updatedGuess[currentRow].letters.map(x => x.letter).reduce((a: string,b:string) => a + b)
+    if (!wordlist.includes(currentWord)) {
+      return;
+    }
+
+    const markedLetters: string[] = []
+    // First, make a pass over all correct letters since these have priority of being marked
+    updatedGuess[currentRow].letters.forEach((letter: Letter, index: number) => {
+      if (letter.letter === goalWord[index]) {
+        letter.state = LetterState.CORRECT;
+        markedLetters.push(letter.letter);
+      }
+    });
+
+    // Second, make a pass over non processed letters since these have lower priority
+    updatedGuess[currentRow].letters
+      .filter(letter => letter.state !== LetterState.CORRECT)
+      .forEach((letter: Letter) => {
+        if (goalWord.includes(letter.letter)) {
+          if (markedLetters.filter(x => x === letter.letter).length < goalWord.split('').filter(x => x === letter.letter).length) {
+            // Only want to mark letter as wrong position if there are more letters in the goal word than the ones
+            // that have been placed correctly
+            letter.state = LetterState.WRONG_POSITION;
+          } else {
+            letter.state = LetterState.WRONG
+          }
+        } else if (!goalWord.includes(letter.letter)) {
+          letter.state = LetterState.WRONG
+        } else {
+          letter.state = LetterState.NONE;
+        }
+        markedLetters.push(letter.letter);
+      }
+    );
+
+    updatedGuess[currentRow].locked = true;
+    setGuesses(updatedGuess)
+    if (currentWord === goalWord) {
+      updatedGuess[currentRow].correct = true;
+      setGameState(GameState.WIN);
+    } else if (currentWord !== goalWord && currentRow === 5) {
+      setGameState(GameState.LOSS);
+    } else {
+      setCurrentRow(currentRow + 1);
+    }
+  }, [currentRow, guesses]);
+
+  const handleLetterKey = useCallback((event: any) => {
+    let letter = "";
+    // Swedish special letters are really weirdly represented in event codes
+    switch (event.code) {
+      case 'BracketLeft':
+        letter = "Å";
+        break;
+      case 'Quote':
+        letter = 'Ä';
+        break;
+      case 'Semicolon':
+        letter = 'Ö';
+        break;
+      default:
+        letter = event.key.toUpperCase();
+    }
+    const updatedGuess = guesses.slice();
+    updatedGuess[currentRow].letters.push({
+      letter: letter,
+      state: LetterState.NONE
+    });
+    setGuesses(updatedGuess)
+  }, [currentRow, guesses]);
+
   useEffect(() => {
     const handleKeydown = (event: KeyboardEvent) => {
       if (gameState === GameState.WIN || gameState === GameState.LOSS) {
         return;
       }
       if (event.key === 'Enter' && guesses[currentRow].letters.length === 5) {
-        // User has locked in a guess
-        const updatedGuess = guesses.slice();
-        const currentWord = updatedGuess[currentRow].letters.map(x => x.letter).reduce((a: string,b:string) => a + b)
-        if (!wordlist.includes(currentWord)) {
-          return;
-        }
-
-        const markedLetters: string[] = []
-        // First, make a pass over all correct letters since these have priority of being marked
-        updatedGuess[currentRow].letters.forEach((letter: Letter, index: number) => {
-          if (letter.letter === goalWord[index]) {
-            letter.state = LetterState.CORRECT;
-            markedLetters.push(letter.letter);
-          }
-        });
-
-        // Second, make a pass over non processed letters since these have lower priority
-        updatedGuess[currentRow].letters
-          .filter(letter => letter.state !== LetterState.CORRECT)
-          .forEach((letter: Letter) => {
-            if (goalWord.includes(letter.letter)) {
-              if (markedLetters.filter(x => x === letter.letter).length < goalWord.split('').filter(x => x === letter.letter).length) {
-                // Only want to mark letter as wrong position if there are more letters in the goal word than the ones
-                // that have been placed correctly
-                letter.state = LetterState.WRONG_POSITION;
-              } else {
-                letter.state = LetterState.WRONG
-              }
-            } else if (!goalWord.includes(letter.letter)) {
-              letter.state = LetterState.WRONG
-            } else {
-              letter.state = LetterState.NONE;
-            }
-            markedLetters.push(letter.letter);
-          }
-        );
-
-        updatedGuess[currentRow].locked = true;
-        setGuesses(updatedGuess)
-        if (currentWord === goalWord) {
-          updatedGuess[currentRow].correct = true;
-          setGameState(GameState.WIN);
-        } else if (currentWord !== goalWord && currentRow === 5) {
-          setGameState(GameState.LOSS);
-        } else {
-          setCurrentRow(currentRow + 1);
-        }
+        handleEnterKey();
       } else if ((event.code >= 'KeyA' && event.code <= 'KeyZ' && guesses[currentRow].letters.length < 5) ||
           event.code === 'BracketLeft' || event.code === 'Quote' || event.code === 'Semicolon') {
-        let letter = "";
-        // Swedish special letters are really weirdly represented in event codes
-        switch (event.code) {
-          case 'BracketLeft':
-            letter = "Å";
-            break;
-          case 'Quote':
-            letter = 'Ä';
-            break;
-          case 'Semicolon':
-            letter = 'Ö';
-            break;
-          default:
-            letter = event.key.toUpperCase();
-        }
-        const updatedGuess = guesses.slice();
-        updatedGuess[currentRow].letters.push({
-          letter: letter,
-          state: LetterState.NONE
-        });
-        setGuesses(updatedGuess)
+        handleLetterKey(event);
       } else if (event.code === "Backspace") {
         const updatedGuess = guesses.slice();
         updatedGuess[currentRow].letters.pop();
         setGuesses(updatedGuess)  
       }
     };
+
     window.addEventListener("keydown", handleKeydown);
     return () => {
       window.removeEventListener('keydown', handleKeydown)
     }
-  })
+  }, [handleEnterKey, handleLetterKey, gameState, currentRow, guesses])
 
+  const handleLetterClick = (e: any) => {
+    const updatedGuess = guesses.slice();
+    updatedGuess[currentRow].letters.push({
+      letter: e.target.innerHTML,
+      state: LetterState.NONE
+    });
+    setGuesses(updatedGuess)
+  };
+  const handleEnterClick = (e: any) => {
+    handleEnterKey();
+  };
+  const handleBackspaceClick = (e: any) => {
+    const updatedGuess = guesses.slice();
+    updatedGuess[currentRow].letters.pop();
+    setGuesses(updatedGuess)  
+  };
 
   return (
     <div className="flex flex-col justify-center items-center h-screen">
       <GameOver gameState={gameState}/>
       <Grid word={goalWord} guesses={guesses}/>
-      <UsedLetters guesses={guesses}/>
+      <UsedLetters guesses={guesses} click={handleLetterClick}/>
+      <div onClick={handleEnterClick}>Enter</div>
+      <div onClick={handleBackspaceClick}>Radera</div>
     </div>
   );
 }
