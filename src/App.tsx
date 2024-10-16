@@ -11,8 +11,7 @@ const App = () => {
   const [currentRow, setCurrentRow] = useState(0);
   const [gameState, setGameState] = useState(GameState.PENDING);
 
-  const handleEnterKey = useCallback(() => {
-    // User has locked in a guess
+  const processLockedInGuess = useCallback(() => {
     const updatedGuess = [...guesses]
     const currentWord = updatedGuess[currentRow].letters.map(x => x.letter).reduce((a: string,b:string) => a + b)
     if (!wordlist.includes(currentWord)) {
@@ -91,7 +90,7 @@ const App = () => {
         return;
       }
       if (event.key === 'Enter' && guesses[currentRow].letters.length === 5) {
-        handleEnterKey();
+        processLockedInGuess();
       } else if ((event.code >= 'KeyA' && event.code <= 'KeyZ' && guesses[currentRow].letters.length < 5) ||
           event.code === 'BracketLeft' || event.code === 'Quote' || event.code === 'Semicolon') {
         handleLetterKey(event);
@@ -106,18 +105,15 @@ const App = () => {
     return () => {
       window.removeEventListener('keydown', handleKeydown)
     }
-  }, [handleEnterKey, handleLetterKey, gameState, currentRow, guesses])
+  }, [gameState, guesses])
 
-  const handleLetterClick = (e: any) => {
+  const handleLetterClick = (e: React.MouseEvent<HTMLElement>) => {
     const updatedGuess = [...guesses];
     updatedGuess[currentRow].letters.push({
-      letter: e.target.innerHTML,
+      letter: (e.target as HTMLElement).innerHTML,
       state: LetterState.NONE
     });
     setGuesses(updatedGuess)
-  };
-  const handleEnterClick = () => {
-    handleEnterKey();
   };
   const handleBackspaceClick = () => {
     const updatedGuess = [...guesses];
@@ -131,7 +127,7 @@ const App = () => {
         <div className="md:hidden text-5xl absolute top-0 w-full text-center border-2 border-zinc-400 bg-gray-300">Ordle</div>
         <GameOver gameState={gameState}/>
         <Grid guesses={guesses}/>
-        <Keyboard guesses={guesses} letterClick={handleLetterClick} enterClick={handleEnterClick} backspaceClick={handleBackspaceClick}/>
+        <Keyboard guesses={guesses} letterClick={handleLetterClick} enterClick={processLockedInGuess} backspaceClick={handleBackspaceClick}/>
       </div>
     </div>
   );
