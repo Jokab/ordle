@@ -31,10 +31,10 @@ const Row = ({guess}: RowProps) => {
     'bg-yellow': letter?.state === LetterState.WRONG_POSITION
   });
   return (
-    [Array(5).fill(0).map((_, i: number) => 
+    [...Array(5)].map((_, i: number) => 
       <div className={cellClass(guess?.letters[i])} key={i}>
         {guess?.letters && guess?.letters.length > i ? guess.letters[i].letter : undefined}
-      </div>)
-    ]
+      </div>
+    )
   );
 }
