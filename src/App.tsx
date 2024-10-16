@@ -122,9 +122,9 @@ const App = () => {
   };
 
   return (
-    <div className="h-screen w-screen bg-zinc-100">
+    <div className="h-screen w-screen bg-gray-800 ">
       <div className="flex flex-col justify-center items-center h-screen w-96 my-0 mx-auto">
-        <div className="md:hidden text-5xl absolute top-0 w-full text-center border-2 border-zinc-400 bg-gray-300">Ordle</div>
+        <div className="md:hidden text-6xl font-bold absolute top-10 right-32 w-full text-right bg-gray-800">Ordle<span className="text-8xl">.</span></div>
         <GameOver gameState={gameState}/>
         <Grid guesses={guesses}/>
         <Keyboard guesses={guesses} letterClick={handleLetterClick} enterClick={processLockedInGuess} backspaceClick={handleBackspaceClick}/>
