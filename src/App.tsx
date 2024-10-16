@@ -116,10 +116,10 @@ const App: FunctionComponent<{}> = () => {
     });
     setGuesses(updatedGuess)
   };
-  const handleEnterClick = (e: any) => {
+  const handleEnterClick = () => {
     handleEnterKey();
   };
-  const handleBackspaceClick = (e: any) => {
+  const handleBackspaceClick = () => {
     const updatedGuess = guesses.slice();
     updatedGuess[currentRow].letters.pop();
     setGuesses(updatedGuess)  
