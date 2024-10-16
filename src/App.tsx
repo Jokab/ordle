@@ -1,56 +1,10 @@
-import classNames from 'classnames';
-import wordlist from './wordlist.ts';
+import {wordlist, goalWord}  from './wordlist.ts';
 
-import { FunctionComponent, MouseEventHandler, useCallback, useEffect, useState } from 'react';
+import { FunctionComponent, useCallback, useEffect, useState } from 'react';
 import { GameState, Guess, guessesInitialState, Letter, LetterState } from './types';
 import Keyboard from './Keyboard.tsx';
-
-
-const Grid: FunctionComponent<{word: string; guesses: Guess[]}> = ({guesses = []}) => {
-  return (
-    <table className="w-96 h-96 table-fixed">
-      <tbody className="border-2">
-        {
-          [Array(6).fill(0).map((_, i:number) => 
-            <Row guess={guesses[i]} key={i}/>)
-          ]
-        }
-      </tbody>
-    </table>
-  );
-}
-
-const Row: FunctionComponent<{guess: Guess}> = ({guess = undefined}) => {
-  const cellClass = (letter: Letter | undefined) => classNames({
-    'bg-gray-400 text-3xl w-10 h-10 text-center truncate border-2': true,
-    'bg-green-500': letter?.state === LetterState.CORRECT,
-    'bg-gray-500': letter?.state === LetterState.WRONG,
-    'bg-yellow-400': letter?.state === LetterState.WRONG_POSITION
-  });
-  return (
-    <tr>
-      {
-        [Array(5).fill(0).map((_, i: number) => 
-          <td className={cellClass(guess?.letters[i])} key={i}>
-              {guess?.letters && guess?.letters.length > i ? guess.letters[i].letter : undefined}
-          </td>)
-        ]
-      }
-    </tr>
-  );
-}
-
-const GameOver: FunctionComponent<{gameState: GameState | undefined}> = ({gameState = undefined}) => {
-  if (gameState === GameState.WIN) {
-    return <div className="mb-10 text-2xl">Du vann!</div>
-  } else if (gameState === GameState.LOSS) {
-      return <div className="mb-10 text-2xl">Det gick inte denna gången! :-( Rätt ord var: {goalWord}</div>
-  } else {
-    return <></>
-  }
-}
-
-const goalWord = wordlist[Math.floor(Math.random() * wordlist.length)].toUpperCase();
+import GameOver from './GameOver.tsx';
+import Grid from './Grid.tsx';
 
 const App: FunctionComponent<{}> = () => {
   const [guesses, setGuesses] = useState<Guess[]>(guessesInitialState)
@@ -176,7 +130,7 @@ const App: FunctionComponent<{}> = () => {
       <div className="flex flex-col justify-center items-center h-screen w-96 my-0 mx-auto">
         <div className="md:hidden text-5xl absolute top-0 w-full text-center border-2 border-zinc-400 bg-gray-300">Ordle</div>
         <GameOver gameState={gameState}/>
-        <Grid word={goalWord} guesses={guesses}/>
+        <Grid guesses={guesses}/>
         <Keyboard guesses={guesses} letterClick={handleLetterClick} enterClick={handleEnterClick} backspaceClick={handleBackspaceClick}/>
       </div>
     </div>

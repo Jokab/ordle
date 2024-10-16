@@ -1,4 +1,4 @@
-export default [
+export const wordlist = [
     "ABBOT",
     "ABORT",
     "ABSID",
@@ -4673,3 +4673,5 @@ export default [
     "ÖVLIG",
     "ÖVRIG",
 ]
+
+export const goalWord = wordlist[Math.floor(Math.random() * wordlist.length)].toUpperCase();
