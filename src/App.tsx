@@ -1,8 +1,7 @@
-import './App.css';
 import classNames from 'classnames';
-import wordlist from './wordlist';
+import wordlist from './wordlist.ts';
 
-import React, { FunctionComponent, MouseEventHandler, useCallback, useEffect, useState } from 'react';
+import { FunctionComponent, MouseEventHandler, useCallback, useEffect, useState } from 'react';
 import { GameState, Guess, guessesInitialState, Letter, LetterState } from './types';
 
 
