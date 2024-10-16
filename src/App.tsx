@@ -1,19 +1,19 @@
 import {wordlist, goalWord}  from './wordlist.ts';
 
-import { FunctionComponent, useCallback, useEffect, useState } from 'react';
+import { useCallback, useEffect, useState } from 'react';
 import { GameState, Guess, guessesInitialState, Letter, LetterState } from './types';
 import Keyboard from './Keyboard.tsx';
 import GameOver from './GameOver.tsx';
 import Grid from './Grid.tsx';
 
-const App: FunctionComponent<{}> = () => {
+const App = () => {
   const [guesses, setGuesses] = useState<Guess[]>(guessesInitialState)
   const [currentRow, setCurrentRow] = useState(0);
   const [gameState, setGameState] = useState(GameState.PENDING);
 
   const handleEnterKey = useCallback(() => {
     // User has locked in a guess
-    const updatedGuess = guesses.slice();
+    const updatedGuess = [...guesses]
     const currentWord = updatedGuess[currentRow].letters.map(x => x.letter).reduce((a: string,b:string) => a + b)
     if (!wordlist.includes(currentWord)) {
       return;
@@ -59,9 +59,9 @@ const App: FunctionComponent<{}> = () => {
     } else {
       setCurrentRow(currentRow + 1);
     }
-  }, [currentRow, guesses]);
+  }, [guesses]);
 
-  const handleLetterKey = useCallback((event: any) => {
+  const handleLetterKey = useCallback((event: KeyboardEvent) => {
     let letter = "";
     // Swedish special letters are really weirdly represented in event codes
     switch (event.code) {
@@ -77,13 +77,13 @@ const App: FunctionComponent<{}> = () => {
       default:
         letter = event.key.toUpperCase();
     }
-    const updatedGuess = guesses.slice();
+    const updatedGuess = [...guesses];
     updatedGuess[currentRow].letters.push({
       letter: letter,
       state: LetterState.NONE
     });
     setGuesses(updatedGuess)
-  }, [currentRow, guesses]);
+  }, [guesses]);
 
   useEffect(() => {
     const handleKeydown = (event: KeyboardEvent) => {
@@ -96,7 +96,7 @@ const App: FunctionComponent<{}> = () => {
           event.code === 'BracketLeft' || event.code === 'Quote' || event.code === 'Semicolon') {
         handleLetterKey(event);
       } else if (event.code === "Backspace") {
-        const updatedGuess = guesses.slice();
+        const updatedGuess = [...guesses]
         updatedGuess[currentRow].letters.pop();
         setGuesses(updatedGuess)  
       }
@@ -109,7 +109,7 @@ const App: FunctionComponent<{}> = () => {
   }, [handleEnterKey, handleLetterKey, gameState, currentRow, guesses])
 
   const handleLetterClick = (e: any) => {
-    const updatedGuess = guesses.slice();
+    const updatedGuess = [...guesses];
     updatedGuess[currentRow].letters.push({
       letter: e.target.innerHTML,
       state: LetterState.NONE
@@ -120,7 +120,7 @@ const App: FunctionComponent<{}> = () => {
     handleEnterKey();
   };
   const handleBackspaceClick = () => {
-    const updatedGuess = guesses.slice();
+    const updatedGuess = [...guesses];
     updatedGuess[currentRow].letters.pop();
     setGuesses(updatedGuess)  
   };
