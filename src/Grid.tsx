@@ -8,7 +8,7 @@ interface GridProps {
 
 export default ({guesses = []}: GridProps) => {
   return (
-    <div className="grid grid-cols-5 grid-rows-6 gap-2 w-96">
+    <div className="grid grid-cols-5 grid-rows-6 gap-2 w-full h-full max-w-[360px] max-h-[420px]">
       {
         [Array(allowedGuesses).fill(0).map((_, i:number) => 
           <Row guess={guesses[i]} key={i}/>)

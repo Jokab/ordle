@@ -126,9 +126,9 @@ const App = () => {
   }
 
   return (
-    <div className="h-screen w-screen bg-gray-800 ">
-      <div className="flex flex-col justify-center items-center h-screen w-96 my-0 mx-auto">
-        <div className="md:hidden text-6xl font-bold absolute top-10 right-32 w-full text-right bg-gray-800">Ordle<span className="text-8xl">.</span></div>
+    <div className="h-screen w-screen bg-gray-800 p-2">
+      <div className="flex flex-col justify-center items-center h-screen w-full my-0 mx-auto">
+        <div className="text-6xl font-bold absolute top-6 right-32 w-full text-right bg-gray-800">Ordle<span className="text-8xl">.</span></div>
         <GameOver gameState={gameState} click={reset}/>
         <Grid guesses={guesses}/>
         <Keyboard guesses={guesses} letterClick={handleLetterClick} enterClick={processLockedInGuess} backspaceClick={handleBackspaceClick}/>
