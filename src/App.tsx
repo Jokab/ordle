@@ -121,11 +121,15 @@ const App = () => {
     setGuesses(updatedGuess)  
   };
 
+  const reset = () => {
+    window.location.reload();
+  }
+
   return (
     <div className="h-screen w-screen bg-gray-800 ">
       <div className="flex flex-col justify-center items-center h-screen w-96 my-0 mx-auto">
         <div className="md:hidden text-6xl font-bold absolute top-10 right-32 w-full text-right bg-gray-800">Ordle<span className="text-8xl">.</span></div>
-        <GameOver gameState={gameState}/>
+        <GameOver gameState={gameState} click={reset}/>
         <Grid guesses={guesses}/>
         <Keyboard guesses={guesses} letterClick={handleLetterClick} enterClick={processLockedInGuess} backspaceClick={handleBackspaceClick}/>
       </div>
