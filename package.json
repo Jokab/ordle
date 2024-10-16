@@ -6,6 +6,7 @@
   "main": "src/main.ts",
   "repository": "https://github.com/Jokab/ordle.git",
   "author": "Jakob Csörgei Gustavsson <jakob.csorgei@gmail.com>",
+  "homepage": "https://jokab.github.io/ordle/.",
   "license": "MIT",
   "scripts": {
     "deploy": "gh-pages -d dist",
@@ -19,7 +20,6 @@
     "react-dom": "^18.3.1"
   },
   "devDependencies": {
-    "gh-pages": "^6.2.0",
     "@eslint/js": "^9.11.1",
     "@types/react": "^18.3.10",
     "@types/react-dom": "^18.3.0",
@@ -28,6 +28,7 @@
     "eslint": "^9.11.1",
     "eslint-plugin-react-hooks": "^5.1.0-rc.0",
     "eslint-plugin-react-refresh": "^0.4.12",
+    "gh-pages": "^6.2.0",
     "globals": "^15.9.0",
     "postcss": "^8.4.47",
     "tailwindcss": "^3.4.14",
