@@ -24,11 +24,11 @@ interface RowProps {
   
 const Row = ({guess}: RowProps) => {
   const cellClass = (letter: Letter | undefined) => classNames({
-    'bg-gray-400 text-5xl font-bold w-full rounded-md flex justify-center items-center h-16': true,
-    'bg-gray-400': letter?.state === LetterState.NONE,
-    'bg-lime-600': letter?.state === LetterState.CORRECT,
-    'bg-gray-600': letter?.state === LetterState.WRONG,
-    'bg-yellow-500': letter?.state === LetterState.WRONG_POSITION
+    'bg-accent text-5xl font-bold w-full rounded-md flex justify-center items-center h-16': true,
+    'bg-accent': letter?.state === LetterState.NONE,
+    'bg-green': letter?.state === LetterState.CORRECT,
+    'bg-grayish': letter?.state === LetterState.WRONG,
+    'bg-yellow': letter?.state === LetterState.WRONG_POSITION
   });
   return (
     [Array(5).fill(0).map((_, i: number) => 

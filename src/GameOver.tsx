@@ -18,7 +18,7 @@ export default ({gameState = undefined, click}: GameProps) : React.JSX.Element =
         return (
           <>
             <div className="text-3xl font-bold">Du vann! Spela igen?</div>
-            <button onClick={click} className="w-1/2 bg-gray-400 rounded-lg p-2 text-xl hover:bg-sky-500">Starta om</button>
+            <button onClick={click} className="w-1/2 bg-accent rounded-lg p-2 text-xl hover:bg-sky-500">Starta om</button>
           </>
         );
       } else if (gameState === GameState.LOSS) {

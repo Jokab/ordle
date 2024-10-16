@@ -40,7 +40,7 @@ export default ({guesses, letterClick, enterClick, backspaceClick}: KeyboardProp
   }
 
   const keyRow = "flex items-center justify-between gap-1 w-full";
-  const actionButton = "bg-gray-400 rounded-md font-bold text-xl p-1";
+  const actionButton = "bg-accent rounded-md font-bold text-xl p-1";
 
   return (
     <div className="grid w-full max-w-[360px] max-h-[420px] gap-2 mt-2">
@@ -69,10 +69,10 @@ interface KeyProps {
 const Key = ({letter, onClick}: KeyProps) => {
   const cellClass = (letter: Letter) => classNames({
     'text-xl text-center font-bold w-full rounded-md p-0.5 cursor-pointer': true,
-    'bg-gray-400 hover:opacity-85': letter.state === LetterState.NONE,
-    'bg-lime-600': letter.state === LetterState.CORRECT,
-    'bg-gray-600': letter.state === LetterState.WRONG,
-    'bg-yellow-500': letter.state === LetterState.WRONG_POSITION
+    'bg-accent hover:opacity-85': letter.state === LetterState.NONE,
+    'bg-green': letter.state === LetterState.CORRECT,
+    'bg-grayish': letter.state === LetterState.WRONG,
+    'bg-yellow': letter.state === LetterState.WRONG_POSITION
   });
 
   return (
