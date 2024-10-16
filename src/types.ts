@@ -1,3 +1,5 @@
+import { allowedGuesses } from "./config";
+
 export enum LetterState {
     CORRECT,
     WRONG_POSITION,
@@ -16,14 +18,12 @@ export type Guess = {
     correct: boolean;
 }
 
-export const guessesInitialState: Guess[] = [
-    {letters: [] as Letter[], locked: false, correct: false},
-    {letters: [] as Letter[], locked: false, correct: false},
-    {letters: [] as Letter[], locked: false, correct: false},
-    {letters: [] as Letter[], locked: false, correct: false},
-    {letters: [] as Letter[], locked: false, correct: false},
-    {letters: [] as Letter[], locked: false, correct: false}
-]
+export const guessesInitialState: Guess[] = 
+    [...Array(allowedGuesses).keys()].map(_ => ({
+        letters: [] as Letter[], 
+        locked: false, 
+        correct: false})
+    );
 
 export enum GameState {
     WIN,

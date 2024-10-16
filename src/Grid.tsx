@@ -1,5 +1,6 @@
 import classNames from "classnames";
 import { Guess, Letter, LetterState } from "./types";
+import { allowedGuesses } from "./config";
 
 interface GridProps {
     guesses: Guess[];
@@ -10,7 +11,7 @@ export default ({guesses = []}: GridProps) => {
       <table className="w-96 h-96 table-fixed">
         <tbody className="border-2">
           {
-            [Array(6).fill(0).map((_, i:number) => 
+            [Array(allowedGuesses).fill(0).map((_, i:number) => 
               <Row guess={guesses[i]} key={i}/>)
             ]
           }
