@@ -4,7 +4,7 @@ import { Guess, LetterState, Letter } from "./types";
 
 interface KeyboardProps {
     guesses: Guess[];
-    letterClick: MouseEventHandler<HTMLSpanElement> | undefined;
+    letterClick: MouseEventHandler | undefined;
     enterClick: MouseEventHandler<HTMLDivElement> | undefined;
     backspaceClick: MouseEventHandler<HTMLDivElement> | undefined;
 }
@@ -31,35 +31,51 @@ export default ({guesses, letterClick, enterClick, backspaceClick}: KeyboardProp
     setUsedKeys(newKeys);
   }, [guesses]);
 
-  const drawLetters = (keys: Letter[], startIndex: number, endIndex: number) => {
+  const drawKeys = (keys: Letter[], startIndex: number, endIndex: number) => {
     const elems = []
     for (let i = startIndex; i < endIndex; i++) {
-      const cellClass = (letter: Letter) => classNames({
-        'text-xl text-center font-bold w-full rounded-md p-0.5': true,
-        'bg-gray-400': letter.state === LetterState.NONE,
-        'bg-lime-600': letter.state === LetterState.CORRECT,
-        'bg-gray-600': letter.state === LetterState.WRONG,
-        'bg-yellow-500': letter.state === LetterState.WRONG_POSITION
-      });
-      elems.push(<span className={cellClass(keys[i])} key={i} onClick={letterClick}>{keys[i].letter}</span>)
+      elems.push(<Key letter={keys[i]} key={i} onClick={letterClick} />)
     }
     return elems;
   }
+
+  const keyRow = "flex items-center justify-between gap-1 w-full";
+  const actionButton = "bg-gray-400 rounded-md font-bold text-xl p-1";
+
   return (
     <div className="grid w-full max-w-[360px] max-h-[420px] gap-2 mt-2">
-      <div className="flex items-center justify-between gap-1">
-        {drawLetters(usedKeys, 0, 11)}
+      <div className={keyRow}>
+        {drawKeys(usedKeys, 0, 11)}
       </div>
-      <div className="flex items-center justify-between gap-1">
-        {drawLetters(usedKeys, 11, 22)}
+      <div className={keyRow}>
+        {drawKeys(usedKeys, 11, 22)}
       </div>
-      <div className="flex items-center justify-between gap-1">
-        <div className="bg-gray-400 rounded-md font-bold text-xl p-1" onClick={enterClick}>Enter</div>
-        <div className="flex items-center justify-between gap-1 w-full">
-          {drawLetters(usedKeys, 22, 29)}
+      <div className={keyRow}>
+        <div className={actionButton} onClick={enterClick}>Enter</div>
+        <div className={keyRow}>
+          {drawKeys(usedKeys, 22, 29)}
         </div>
-        <div className="bg-gray-400 rounded-md font-bold text-xl p-1" onClick={backspaceClick}>Radera</div>
+        <div className={actionButton} onClick={backspaceClick}>Radera</div>
       </div>
     </div>
+  )
+}
+
+interface KeyProps {
+  letter: Letter;
+  onClick: MouseEventHandler<HTMLSpanElement> | undefined;
+}
+
+const Key = ({letter, onClick}: KeyProps) => {
+  const cellClass = (letter: Letter) => classNames({
+    'text-xl text-center font-bold w-full rounded-md p-0.5 cursor-pointer': true,
+    'bg-gray-400 hover:opacity-85': letter.state === LetterState.NONE,
+    'bg-lime-600': letter.state === LetterState.CORRECT,
+    'bg-gray-600': letter.state === LetterState.WRONG,
+    'bg-yellow-500': letter.state === LetterState.WRONG_POSITION
+  });
+
+  return (
+    <span onClick={onClick} className={cellClass(letter)}>{letter.letter}</span>
   )
 }
