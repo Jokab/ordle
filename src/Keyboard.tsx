@@ -40,7 +40,7 @@ export default ({guesses, letterClick, enterClick, backspaceClick}: KeyboardProp
   }
 
   const keyRow = "flex items-center justify-between gap-1 w-full";
-  const actionButton = "bg-accent rounded-md font-bold text-xl p-1";
+  const actionButton = "bg-accent rounded-md font-bold text-xl p-1 cursor-pointer hover:opacity-85";
 
   return (
     <div className="grid w-full max-w-[360px] max-h-[420px] gap-2 mt-2">
