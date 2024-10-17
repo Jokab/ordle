@@ -23,11 +23,12 @@ export default ({guesses, letterClick, enterClick, backspaceClick}: KeyboardProp
       .reduce((a: Letter[], b: Letter[]) => a.concat(b, []))
 
     const newKeys = [...usedKeys];
-    newKeys.forEach(x => {
-      const matchingGuess = guessedLetters.find(y => x.letter === y.letter)
-      if (matchingGuess) {
-        x.state = matchingGuess.state;
-      }
+    newKeys.forEach(key => {
+      const matchingGuesses = guessedLetters.filter(gL => key.letter === gL.letter);
+      if (matchingGuesses.some(x => x.state === LetterState.CORRECT)) key.state = LetterState.CORRECT;
+      else if (matchingGuesses.some(x => x.state === LetterState.WRONG_POSITION)) key.state = LetterState.WRONG_POSITION;
+      else if (matchingGuesses.some(x => x.state === LetterState.WRONG)) key.state = LetterState.WRONG;
+      else key.state = LetterState.NONE;
     });
     setUsedKeys(newKeys);
   }, [guesses]);
