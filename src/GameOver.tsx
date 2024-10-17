@@ -26,9 +26,9 @@ export default ({gameState = undefined, click}: GameProps) : React.JSX.Element =
           return <></>;
       }
     }
-
+    
     return (
-      <dialog className="w-9/12 rounded-lg bg-gray-100" ref={dialogRef}>
+      <dialog className="w-9/12 max-w-96 rounded-lg bg-gray-100" ref={dialogRef}>
         <div className="p-6 flex flex-col h-full w-full items-center justify-center text-center gap-10">
           {dialogContent()}
           {/* Tabindex is hack to prevent dialog from autofocusing the button when it opens.
