@@ -18,20 +18,22 @@ export default ({guesses, letterClick, enterClick, backspaceClick}: KeyboardProp
 
   useEffect(() => {
     const guessedLetters = guesses
+      .sort((a,b) => b.id - a.id)
       .map((guess: Guess) => guess.letters)
       .reduce((a: Letter[], b: Letter[]) => a.concat(b, []))
 
     const newKeys = [...usedKeys];
     newKeys.forEach(x => {
-      const matchingGuess = guessedLetters.filter(y => x.letter === y.letter)
-      if (matchingGuess && matchingGuess.length > 0) {
-        x.state = matchingGuess[0].state;
+      const matchingGuess = guessedLetters.find(y => x.letter === y.letter)
+      if (matchingGuess) {
+        x.state = matchingGuess.state;
       }
     });
     setUsedKeys(newKeys);
   }, [guesses]);
 
   const drawKeys = (keys: Letter[], startIndex: number, endIndex: number) => {
+
     const elems = []
     for (let i = startIndex; i < endIndex; i++) {
       elems.push(<Key letter={keys[i]} key={i} onClick={letterClick} />)
